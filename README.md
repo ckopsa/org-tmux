@@ -12,11 +12,14 @@ An Emacs package to launch tmux sessions from Org mode headings.
 (require 'org-tmux)
 ```
 
-Or, if you're using `use-package`:
+Or, if you're using `use-package` and `straight.el`:
 
 ```elisp
 (use-package org-tmux
-  :load-path "/path/to/org-tmux/")
+  :straight (org-tmux :type git :host github :repo "ckopsa/org-tmux")
+  :config
+  ;; Your configuration for org-tmux goes here
+  )
 ```
 
 ## Usage
