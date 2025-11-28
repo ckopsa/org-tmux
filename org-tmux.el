@@ -69,13 +69,19 @@ a TMUX_SESSION property."
   (interactive)
   (let* ((heading (org-get-heading t t t t))
          (session-id (or (org-entry-get (point) org-tmux-session-property)
-                         (org-tmux--slug heading))))
+                         (org-tmux--slug heading)))
+         (directory (when (buffer-file-name)
+                      (file-name-directory (buffer-file-name)))))
 
     (unless (org-entry-get (point) org-tmux-session-property)
       (org-entry-put (point) org-tmux-session-property session-id))
     
-    (let ((cmd-args (append org-tmux-terminal-args
-                            (list "-e" "tmux" "new-session" "-A" "-s" session-id))))
+    (let ((cmd-args
+           (if directory
+               (append org-tmux-terminal-args
+                       (list "-e" "tmux" "new-session" "-c" directory "-A" "-s" session-id))
+             (append org-tmux-terminal-args
+                     (list "-e" "tmux" "new-session" "-A" "-s" session-id)))))
       (apply #'call-process org-tmux-terminal-command nil 0 nil cmd-args))
     
     (message "Launched terminal session: %s" session-id)))
